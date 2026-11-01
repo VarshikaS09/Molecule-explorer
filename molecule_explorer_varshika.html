@@ -1,0 +1,260 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Varshika S | Molecule Explorer</title>
+<style>
+:root {
+  --site-primary: #626B75;
+  --site-secondary: #F5F6F7;
+  --site-background: #E6E8EB;
+  --site-on-primary: #FFFFFF;
+  --site-on-secondary: #20252B;
+  --site-on-background: #20252B;
+  --site-font-body: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --site-font-heading: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --site-heading-scale: 1;
+  --site-spacing-scale: 1;
+  --site-radius-scale: 1;
+  --site-decoration-opacity: 1;
+}
+* { box-sizing: border-box; }
+body { margin: 0; font-family: var(--site-font-body); background: light-dark(#f7f8fb, #101217); color: light-dark(#20252b, #f2f4f7); }
+.app-root { min-height: 100vh; width: 100%; border-radius: 0; background-color: var(--site-background); color: var(--site-on-background); }
+a { color: var(--site-primary); }
+button, input, select { font: inherit; }
+button { cursor: pointer; }
+.nav { display:flex; align-items:center; justify-content:space-between; padding: calc(18px * var(--site-spacing-scale)) calc(5vw * var(--site-spacing-scale)); border-bottom:1px solid color-mix(in srgb, var(--site-on-background) 14%, transparent); gap:16px; }
+.brand { display:flex; align-items:center; gap:12px; font-weight:800; letter-spacing:-.03em; }
+.logo { width:42px; height:42px; display:grid; place-items:center; border-radius:14px; background:var(--site-primary); color:var(--site-on-primary); font-size:22px; }
+.nav small { display:block; color:var(--site-on-background); opacity:.68; font-weight:500; letter-spacing:0; }
+.nav-right { display:flex; align-items:center; gap:12px; flex-wrap:wrap; }
+.pill { padding:8px 12px; border:1px solid color-mix(in srgb, var(--site-on-background) 20%, transparent); border-radius:999px; font-size:12px; }
+main { max-width:1160px; margin:0 auto; padding:clamp(22px,4vw,52px); }
+.hero { display:grid; grid-template-columns:1.25fr .75fr; gap:32px; align-items:center; padding:clamp(20px,4vw,48px) 0 34px; }
+.eyebrow { text-transform:uppercase; letter-spacing:.16em; font-size:11px; font-weight:800; color:var(--site-primary); }
+h1 { font-size:calc(clamp(38px,6vw,68px) * var(--site-heading-scale)); line-height:1.02; letter-spacing:-.055em; margin:14px 0 18px; }
+h2 { font-size:calc(26px * var(--site-heading-scale)); letter-spacing:-.035em; margin:0 0 16px; }
+h3 { margin:0 0 8px; font-size:17px; }
+p { line-height:1.65; }
+.lead { font-size:clamp(16px,2vw,19px); opacity:.8; max-width:680px; }
+.btn { border:0; border-radius:12px; padding:12px 17px; background:var(--site-primary); color:var(--site-on-primary); font-weight:750; }
+.btn.secondary { background:transparent; color:var(--site-on-background); border:1px solid color-mix(in srgb, var(--site-on-background) 25%, transparent); }
+.hero-art { min-height:280px; border-radius:28px; background:var(--site-secondary); display:grid; place-items:center; position:relative; overflow:hidden; border:1px solid color-mix(in srgb, var(--site-on-background) 12%, transparent); }
+.hero-art svg { width:100%; max-width:390px; opacity:var(--site-decoration-opacity); }
+.stat-row { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin:12px 0 42px; }
+.stat, .card { background:var(--site-secondary); border:1px solid color-mix(in srgb, var(--site-on-background) 12%, transparent); border-radius:calc(18px * var(--site-radius-scale)); padding:calc(20px * var(--site-spacing-scale)); }
+.stat strong { display:block; font-size:27px; letter-spacing:-.04em; }
+.stat span, .muted { opacity:.68; font-size:13px; }
+.section { margin:48px 0; }
+.cards { display:grid; grid-template-columns:repeat(4,1fr); gap:14px; }
+.mol-card { cursor:pointer; transition:transform .18s ease, border-color .18s ease; }
+.mol-card:hover { transform:translateY(-3px); border-color:var(--site-primary); }
+.mol-symbol { height:100px; display:grid; place-items:center; margin-bottom:12px; border-radius:13px; background:color-mix(in srgb, var(--site-primary) 9%, transparent); }
+.mol-symbol svg { width:115px; height:85px; }
+.mol-card p { font-size:13px; opacity:.72; min-height:64px; }
+.formula { font-family:ui-monospace,monospace; font-size:13px; padding:5px 8px; display:inline-block; border-radius:7px; background:color-mix(in srgb, var(--site-primary) 12%, transparent); }
+.workspace { display:grid; grid-template-columns:.8fr 1.2fr; gap:18px; }
+label { display:block; font-weight:700; font-size:13px; margin:14px 0 7px; }
+input, select { width:100%; border:1px solid color-mix(in srgb, var(--site-on-background) 22%, transparent); background:var(--site-background); color:var(--site-on-background); border-radius:10px; padding:12px; }
+.row { display:flex; gap:10px; align-items:center; flex-wrap:wrap; }
+.status { margin-top:10px; font-size:13px; }
+.status.ok { color:#35a66c; } .status.bad { color:#d94b4b; }
+.structure { min-height:260px; display:grid; place-items:center; background:color-mix(in srgb, var(--site-primary) 6%, transparent); border-radius:14px; overflow:hidden; }
+.structure svg { width:100%; max-width:420px; }
+.prop-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-top:16px; }
+.prop { padding:14px; border-radius:12px; background:color-mix(in srgb, var(--site-on-background) 5%, transparent); }
+.prop small { display:block; opacity:.65; font-size:11px; margin-bottom:7px; }
+.prop strong { font-size:19px; }
+.bar-chart { display:flex; flex-direction:column; gap:14px; }
+.bar-row { display:grid; grid-template-columns:100px 1fr 55px; gap:12px; align-items:center; font-size:13px; }
+.track { height:12px; background:color-mix(in srgb, var(--site-on-background) 10%, transparent); border-radius:99px; overflow:hidden; }
+.fill { height:100%; background:var(--site-primary); border-radius:99px; }
+.table-wrap { overflow-x:auto; }
+table { width:100%; border-collapse:collapse; font-size:13px; }
+th,td { padding:12px 10px; text-align:left; border-bottom:1px solid color-mix(in srgb, var(--site-on-background) 12%, transparent); }
+th { opacity:.7; font-size:11px; text-transform:uppercase; letter-spacing:.07em; }
+.report-fields { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+footer { border-top:1px solid color-mix(in srgb, var(--site-on-background) 14%, transparent); padding:25px 5vw; display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap; font-size:12px; opacity:.72; }
+.watermark { position:fixed; right:18px; bottom:10px; opacity:.32; font-size:10px; letter-spacing:.16em; pointer-events:none; z-index:5; }
+.note { border-left:3px solid var(--site-primary); padding:12px 15px; background:color-mix(in srgb, var(--site-primary) 8%, transparent); border-radius:0 10px 10px 0; font-size:13px; line-height:1.6; }
+.hidden { display:none !important; }
+@media(max-width:850px) { .hero,.workspace { grid-template-columns:1fr; } .cards { grid-template-columns:repeat(2,1fr); } .stat-row { grid-template-columns:repeat(2,1fr); } .hero-art { min-height:220px; } }
+@media(max-width:500px) { .cards { grid-template-columns:1fr; } .prop-grid { grid-template-columns:repeat(2,1fr); } .report-fields { grid-template-columns:1fr; } .nav { align-items:flex-start; } }
+@media print { .nav,.btn,.watermark,footer { display:none!important; } body,.app-root { background:white!important; color:#111!important; } .card,.stat { background:white!important; border:1px solid #ddd!important; } }
+</style>
+</head>
+<body>
+<div class="app-root">
+<header class="nav">
+  <div class="brand"><div class="logo">⌬</div><div>Molecule Explorer<small>STUDENT CHEMINFORMATICS LAB</small></div></div>
+  <div class="nav-right"><span class="pill">RDKit-inspired learning</span><span class="pill">Varshika S · Soft Grey</span></div>
+</header>
+<main>
+<section class="hero">
+  <div>
+    <div class="eyebrow">Chemistry meets code</div>
+    <h1>Small molecules.<br><span style="color:var(--site-primary)">Big discoveries.</span></h1>
+    <p class="lead">Explore the hidden language of molecules. Enter a SMILES string, inspect a molecular structure, compare calculated properties, and turn chemistry data into a clear story.</p>
+    <div class="row" style="margin-top:24px"><button class="btn" onclick="goTo('analysis')">Explore molecules ↗</button><button class="btn secondary" onclick="goTo('learn')">Learning objectives</button></div>
+  </div>
+  <div class="hero-art" aria-label="Decorative molecule illustration">
+    <svg viewBox="0 0 380 300" role="img" aria-label="Molecular bond illustration">
+      <g stroke="var(--site-primary)" stroke-width="5" opacity=".75">
+        <path d="M190 150 L115 105 L115 195 L190 150 L265 105 L265 195 Z" fill="none"/>
+        <path d="M115 105 L65 70 M115 195 L65 230 M265 105 L315 70 M265 195 L315 230"/>
+      </g>
+      <g fill="var(--site-primary)">
+        <circle cx="190" cy="150" r="27"/><circle cx="115" cy="105" r="19"/><circle cx="115" cy="195" r="19"/>
+        <circle cx="265" cy="105" r="19"/><circle cx="265" cy="195" r="19"/><circle cx="65" cy="70" r="11"/>
+        <circle cx="65" cy="230" r="11"/><circle cx="315" cy="70" r="11"/><circle cx="315" cy="230" r="11"/>
+      </g>
+      <g fill="var(--site-on-background)" font-size="14" font-family="sans-serif" font-weight="700" text-anchor="middle"><text x="190" y="155">C</text><text x="115" y="110">O</text><text x="265" y="110">N</text></g>
+    </svg>
+  </div>
+</section>
+<div class="stat-row">
+  <div class="stat"><strong>04</strong><span>Example compounds</span></div>
+  <div class="stat"><strong>12+</strong><span>Descriptors to explore</span></div>
+  <div class="stat"><strong>2D / 3D</strong><span>Structure views</span></div>
+  <div class="stat"><strong>PDF</strong><span>Personal report layout</span></div>
+</div>
+<section class="section" id="learn">
+  <div class="eyebrow">Start here</div><h2>What you'll learn</h2>
+  <div class="cards">
+    <article class="card"><h3>01 · Read SMILES</h3><p class="muted">Learn how a compact text string encodes atoms, bonds, branches, and rings.</p></article>
+    <article class="card"><h3>02 · Inspect shape</h3><p class="muted">Connect a molecule's 2D drawing to a generated 3D conformer.</p></article>
+    <article class="card"><h3>03 · Compare properties</h3><p class="muted">Explore formula, mass, LogP, TPSA, hydrogen bonding, rings, and flexibility.</p></article>
+    <article class="card"><h3>04 · Explain results</h3><p class="muted">Use graphs and cautious scientific interpretations to communicate findings.</p></article>
+  </div>
+</section>
+<section class="section">
+  <div class="eyebrow">The starter library</div><h2>Meet the molecules</h2>
+  <div class="cards" id="moleculeCards"></div>
+</section>
+<section class="section" id="analysis">
+  <div class="eyebrow">Interactive lab</div><h2>Analyze a molecule</h2>
+  <p class="muted">Choose an example or enter a SMILES string. This preview provides a self-contained learning demonstration; the full Python/RDKit project performs authoritative structure parsing and calculations.</p>
+  <div class="workspace">
+    <div class="card">
+      <label for="compound">Example compound</label>
+      <select id="compound"><option>Ethanol</option><option>Phenol</option><option>Benzene</option><option>Aspirin</option></select>
+      <label for="smiles">SMILES notation</label><input id="smiles" value="CCO" spellcheck="false">
+      <div class="row" style="margin-top:14px"><button class="btn" id="analyze">Analyze molecule</button><button class="btn secondary" id="reset">Reset</button></div>
+      <div id="validation" class="status ok">Example selected. Check the SMILES to continue.</div>
+      <div class="note" style="margin-top:18px">SMILES stands for Simplified Molecular Input Line Entry System. The full Streamlit project uses RDKit for validation and descriptor calculations.</div>
+    </div>
+    <div class="card">
+      <div class="row" style="justify-content:space-between"><h3 id="molTitle">Ethanol</h3><span class="formula" id="formula">C₂H₆O</span></div>
+      <div class="structure" id="structure"></div>
+      <p class="muted" id="description"></p>
+      <div class="prop-grid" id="properties"></div>
+    </div>
+  </div>
+</section>
+<section class="section">
+  <div class="eyebrow">Compare & interpret</div><h2>Structure–property comparison</h2>
+  <div class="card">
+    <label for="metric">Descriptor to compare</label>
+    <select id="metric"><option value="mw">Molecular weight (g/mol)</option><option value="logp">LogP (estimate)</option><option value="tpsa">TPSA (Å²)</option><option value="donors">Hydrogen bond donors</option><option value="acceptors">Hydrogen bond acceptors</option><option value="rot">Rotatable bonds</option><option value="rings">Ring count</option><option value="atoms">Heavy atom count</option><option value="bonds">Bond count</option></select>
+    <div class="bar-chart" id="chart" style="margin-top:20px"></div>
+    <div class="note" id="interpretation" style="margin-top:22px"></div>
+  </div>
+</section>
+<section class="section">
+  <div class="eyebrow">All compounds at a glance</div><h2>Property table</h2>
+  <div class="card table-wrap"><table><thead><tr><th>Compound</th><th>Formula</th><th>MW</th><th>LogP</th><th>TPSA</th><th>HBD / HBA</th><th>Rings</th></tr></thead><tbody id="tableBody"></tbody></table></div>
+</section>
+<section class="section" id="report">
+  <div class="eyebrow">Take your work with you</div><h2>Build your report</h2>
+  <div class="card">
+    <p class="muted">Enter student details to prepare a print-ready analysis summary. Use your browser's Print → Save as PDF option to save it.</p>
+    <div class="report-fields">
+      <div><label for="student">Student name</label><input id="student" value="Varshika S"></div>
+      <div><label for="classInfo">Class / team</label><input id="classInfo" placeholder="e.g. Chemistry project team"></div>
+      <div><label for="reportCompound">Compound</label><select id="reportCompound"><option>Ethanol</option><option>Phenol</option><option>Benzene</option><option>Aspirin</option></select></div>
+      <div><label for="inputSmiles">Input SMILES</label><input id="inputSmiles" value="CCO"></div>
+    </div>
+    <div class="row" style="margin-top:18px"><button class="btn" onclick="prepareReport()">Prepare report</button><button class="btn secondary" onclick="window.print()">Print / Save as PDF</button></div>
+    <div id="reportPreview" class="note" style="margin-top:18px">Your report preview will appear here.</div>
+  </div>
+</section>
+<section class="section">
+  <div class="note"><strong>Scientific note:</strong> values shown in this self-contained website preview are illustrative reference descriptors. The Python/RDKit app in the downloadable project is intended for actual SMILES parsing and recalculation. LogP is an estimate; computed descriptors alone do not establish toxicity, safety, or biological activity.</div>
+</section>
+</main>
+<footer><span>MOLECULE EXPLORER · STUDENT PROJECT</span><span>Theme by Varshika S · Soft Grey</span></footer>
+<div class="watermark">MOLECULE EXPLORER · Varshika S</div>
+</div>
+<script>
+const compounds = {"Ethanol": {"smiles": "CCO", "formula": "C₂H₆O", "mw": 46.069, "exact": 46.0419, "logp": -0.001, "tpsa": 20.23, "donors": 1, "acceptors": 1, "rot": 0, "rings": 0, "atoms": 3, "bonds": 2, "description": "A small alcohol used as a solvent and found in alcoholic beverages."}, "Phenol": {"smiles": "Oc1ccccc1", "formula": "C₆H₆O", "mw": 94.113, "exact": 94.0419, "logp": 1.392, "tpsa": 20.23, "donors": 1, "acceptors": 1, "rot": 0, "rings": 1, "atoms": 7, "bonds": 7, "description": "An aromatic molecule with a hydroxyl group attached directly to the ring."}, "Benzene": {"smiles": "c1ccccc1", "formula": "C₆H₆", "mw": 78.114, "exact": 78.047, "logp": 1.686, "tpsa": 0.0, "donors": 0, "acceptors": 0, "rot": 0, "rings": 1, "atoms": 6, "bonds": 6, "description": "A six-carbon aromatic ring and an important industrial chemical."}, "Aspirin": {"smiles": "CC(=O)Oc1ccccc1C(=O)O", "formula": "C₉H₈O₄", "mw": 180.159, "exact": 180.0423, "logp": 1.31, "tpsa": 63.6, "donors": 1, "acceptors": 4, "rot": 2, "rings": 1, "atoms": 13, "bonds": 13, "description": "An aromatic compound containing ester and carboxylic acid groups; commonly known as a pain-relief medicine."}};
+const themeAccent = "#626B75";
+const sketches = {
+Ethanol: `<svg viewBox="0 0 220 130" aria-label="Stylized ethanol structure"><g stroke="var(--site-primary)" stroke-width="3" fill="none"><path d="M45 72 L100 42 L153 72"/></g><g fill="var(--site-primary)"><circle cx="45" cy="72" r="17"/><circle cx="100" cy="42" r="17"/><circle cx="153" cy="72" r="17"/></g><g fill="var(--site-on-primary)" text-anchor="middle" font-size="13" font-weight="700"><text x="45" y="76">C</text><text x="100" y="46">C</text><text x="153" y="76">O</text></g></svg>`,
+Phenol: `<svg viewBox="0 0 220 130" aria-label="Stylized phenol structure"><g stroke="var(--site-primary)" stroke-width="3" fill="none"><path d="M80 25 L120 25 L143 60 L120 95 L80 95 L57 60 Z M80 33 L113 33 M134 60 L117 87 M64 60 L83 87 M143 60 L176 60"/></g><g fill="var(--site-primary)"><circle cx="80" cy="25" r="5"/><circle cx="120" cy="25" r="5"/><circle cx="143" cy="60" r="5"/><circle cx="120" cy="95" r="5"/><circle cx="80" cy="95" r="5"/><circle cx="57" cy="60" r="5"/><circle cx="184" cy="60" r="13"/></g><text x="184" y="64" text-anchor="middle" fill="var(--site-on-primary)" font-size="11" font-weight="700">OH</text></svg>`,
+Benzene: `<svg viewBox="0 0 220 130" aria-label="Stylized benzene ring"><g stroke="var(--site-primary)" stroke-width="3" fill="none"><path d="M80 25 L120 25 L143 60 L120 95 L80 95 L57 60 Z M84 34 L115 34 M132 60 L115 86 M67 60 L85 86"/></g><g fill="var(--site-primary)"><circle cx="80" cy="25" r="5"/><circle cx="120" cy="25" r="5"/><circle cx="143" cy="60" r="5"/><circle cx="120" cy="95" r="5"/><circle cx="80" cy="95" r="5"/><circle cx="57" cy="60" r="5"/></g></svg>`,
+Aspirin: `<svg viewBox="0 0 220 130" aria-label="Stylized aspirin structure"><g stroke="var(--site-primary)" stroke-width="2.5" fill="none"><path d="M65 28 L99 28 L118 58 L99 88 L65 88 L46 58 Z M70 36 L94 36 M108 58 L94 80 M53 58 L68 80 M118 58 L145 44 M99 88 L124 103 M145 44 L170 44 M124 103 L150 103"/></g><g fill="var(--site-primary)"><circle cx="65" cy="28" r="4"/><circle cx="99" cy="28" r="4"/><circle cx="118" cy="58" r="4"/><circle cx="99" cy="88" r="4"/><circle cx="65" cy="88" r="4"/><circle cx="46" cy="58" r="4"/></g><g fill="var(--site-primary)" font-size="10" font-weight="700"><text x="167" y="36">COOH</text><text x="148" y="96">OCOCH₃</text></g></svg>`
+};
+const descriptors = [
+["Molecular weight","mw","g/mol"],["Exact molecular weight","exact","g/mol"],["LogP","logp",""],["TPSA","tpsa","Å²"],
+["H-bond donors","donors",""],["H-bond acceptors","acceptors",""],["Rotatable bonds","rot",""],["Ring count","rings",""],
+["Heavy atoms","atoms",""],["Bond count","bonds",""]
+];
+function fmt(key,v){ if(["mw","exact","logp","tpsa"].includes(key)) return Number(v).toFixed(key==="exact"?5:3); return v; }
+function setCompound(name) {
+ const c=compounds[name]; document.getElementById("compound").value=name;
+ document.getElementById("smiles").value=c.smiles; document.getElementById("molTitle").textContent=name;
+ document.getElementById("formula").textContent=c.formula; document.getElementById("description").textContent=c.description;
+ document.getElementById("structure").innerHTML=sketches[name];
+ document.getElementById("properties").innerHTML=descriptors.map(([label,key,unit])=>`<div class="prop"><small>${label}</small><strong>${fmt(key,c[key])}</strong><small>${unit}</small></div>`).join("");
+ document.getElementById("validation").textContent="Example structure selected. Reference SMILES: "+c.smiles;
+ document.getElementById("validation").className="status ok";
+ document.getElementById("reportCompound").value=name; document.getElementById("inputSmiles").value=c.smiles;
+ drawChart(); updateTable();
+}
+function goTo(id){document.getElementById(id).scrollIntoView({behavior:"smooth"});}
+function drawChart(){
+ const key=document.getElementById("metric").value;
+ const labels={mw:"Molecular weight",logp:"LogP",tpsa:"TPSA",donors:"H-bond donors",acceptors:"H-bond acceptors",rot:"Rotatable bonds",rings:"Ring count",atoms:"Heavy atoms",bonds:"Bond count"};
+ const vals=Object.values(compounds).map(c=>c[key]); const min=Math.min(0,...vals), max=Math.max(...vals,1);
+ document.getElementById("chart").innerHTML=Object.entries(compounds).map(([name,c])=>{const v=c[key], w=Math.max(1,(v-min)/(max-min)*100);return `<div class="bar-row"><span>${name}</span><div class="track"><div class="fill" style="width:${w}%"></div></div><strong>${fmt(key,v)}</strong></div>`}).join("");
+ let text="";
+ if(key==="logp") text="LogP estimates lipophilicity. Higher values generally indicate greater preference for a non-water-like environment; this is not a direct solubility measurement.";
+ else if(key==="tpsa") text="TPSA estimates polar surface area. Polar groups can affect hydrogen bonding, solubility, and membrane permeability.";
+ else if(key==="donors"||key==="acceptors") text="Hydrogen-bond donor and acceptor counts describe possible interaction sites. They are structural descriptors, not a complete model of real molecular interactions.";
+ else if(key==="rot") text="Rotatable bonds offer a rough flexibility indicator. Ring systems and bond types affect how freely a molecule can change shape.";
+ else if(key==="rings") text="Ring counts help describe cyclic structure. A ring can constrain molecular geometry, but ring count alone does not predict reactivity.";
+ else text="Molecular size descriptors help compare compounds. Larger mass or atom count alone does not tell you whether a molecule is safe, soluble, or biologically active.";
+ document.getElementById("interpretation").innerHTML=`<strong>${labels[key]} — how to read this</strong><br>${text}`;
+}
+function updateTable(){
+ document.getElementById("tableBody").innerHTML=Object.entries(compounds).map(([n,c])=>`<tr><td><strong>${n}</strong></td><td>${c.formula}</td><td>${c.mw.toFixed(3)}</td><td>${c.logp.toFixed(3)}</td><td>${c.tpsa.toFixed(2)}</td><td>${c.donors} / ${c.acceptors}</td><td>${c.rings}</td></tr>`).join("");
+}
+function validateInput(){
+ const name=document.getElementById("compound").value, s=document.getElementById("smiles").value.trim();
+ const status=document.getElementById("validation");
+ if(Object.values(compounds).some(c=>c.smiles===s)){
+   const found=Object.keys(compounds).find(n=>compounds[n].smiles===s); setCompound(found);
+ } else {
+   status.textContent=s ? "Custom SMILES entered. Full chemical validation requires the RDKit-powered Python app." : "Please enter a SMILES string.";
+   status.className="status "+(s?"bad":"bad");
+ }
+}
+function prepareReport(){
+ const name=document.getElementById("reportCompound").value, c=compounds[name];
+ const student=document.getElementById("student").value.trim()||"Not provided";
+ const cls=document.getElementById("classInfo").value.trim()||"Not provided";
+ const smiles=document.getElementById("inputSmiles").value.trim();
+ document.getElementById("reportPreview").innerHTML=`<strong>Molecular Analysis Report</strong><br>Student: ${escapeHtml(student)} · Class/team: ${escapeHtml(cls)}<br>Compound: ${name} · Formula: ${c.formula}<br>Input SMILES: <code>${escapeHtml(smiles)}</code><br>Canonical reference SMILES: <code>${c.smiles}</code><br>Molecular weight: ${c.mw.toFixed(3)} g/mol · LogP: ${c.logp.toFixed(3)} · TPSA: ${c.tpsa.toFixed(2)} Å²<br><br><strong>Conclusion:</strong> ${c.description} The descriptors provide a starting point for comparing structure and properties; they do not replace experimental data.`;
+}
+function escapeHtml(s){return s.replace(/[&<>"']/g,ch=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[ch]));}
+document.getElementById("moleculeCards").innerHTML=Object.entries(compounds).map(([n,c])=>`<article class="card mol-card" onclick="setCompound('${n}');goTo('analysis')"><div class="mol-symbol">${sketches[n]}</div><h3>${n}</h3><span class="formula">${c.formula}</span><p>${c.description}</p><span class="muted">MW ${c.mw.toFixed(3)} g/mol · LogP ${c.logp.toFixed(2)}</span></article>`).join("");
+document.getElementById("compound").addEventListener("change",e=>setCompound(e.target.value));
+document.getElementById("analyze").addEventListener("click",validateInput);
+document.getElementById("reset").addEventListener("click",()=>setCompound("Ethanol"));
+document.getElementById("metric").addEventListener("change",drawChart);
+setCompound("Ethanol"); drawChart(); updateTable(); prepareReport();
+</script>
+</body>
+</html>
